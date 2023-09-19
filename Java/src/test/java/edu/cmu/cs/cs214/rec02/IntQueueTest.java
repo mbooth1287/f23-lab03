@@ -7,6 +7,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
 
@@ -24,7 +25,7 @@ import static org.junit.Assert.*;
  */
 public class IntQueueTest {
 
-    private IntQueue mQueue;
+    private ArrayIntQueue mQueue;
     private List<Integer> testList;
 
     /**
@@ -33,8 +34,8 @@ public class IntQueueTest {
     @Before
     public void setUp() {
         // comment/uncomment these lines to test each class
-        mQueue = new LinkedIntQueue();
-//        mQueue = new ArrayIntQueue();
+        // mQueue = new LinkedIntQueue();
+        mQueue = new ArrayIntQueue();
 
         testList = new ArrayList<>(List.of(1, 2, 3));
     }
@@ -100,5 +101,50 @@ public class IntQueueTest {
         }
     }
 
+    // new tests
+    @Test
+    public void testClear() {
+        testList.forEach(item -> mQueue.enqueue(item));
+        mQueue.clear();
+        assertTrue(mQueue.isEmpty());
+    }
 
+    @Test
+    public void testNullDeque() {
+        testList.forEach(item -> mQueue.enqueue(item));
+        for (int i = 0; i < testList.size(); i++) {
+            mQueue.dequeue();
+        }
+        int testTimes = 4;
+        while(testTimes-->0) {
+            Integer res = mQueue.dequeue();
+            assertNull(res);
+            res = mQueue.peek();
+            assertNull(res);
+        }
+    }
+
+    @Test
+    public void testEnsureCapacity() {
+        List<Integer> arr1 = Arrays.asList(0,1,2,3,4,5,6,7);
+        List<Integer> arr2 = Arrays.asList(10,11,12,13,14,15,16,17,18,19);
+        List<Integer> answer = Arrays.asList(5,6,7,10,11,12,13,14,15,16,17,18,19);
+        
+        arr1.forEach(item -> {
+            mQueue.enqueue(item);
+        });
+
+        int dequeTimes = 5;
+        while(dequeTimes-->0) {
+            mQueue.dequeue();
+        }
+        
+        arr2.forEach(item -> {
+            mQueue.enqueue(item);
+        });
+        answer.forEach(ans -> {
+            Integer temp = mQueue.dequeue();
+            assertEquals(temp, ans);
+        });        
+    }
 }
